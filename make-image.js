@@ -4,12 +4,15 @@ import { promises as fs } from 'fs';
 import process from 'process';
 import path from 'path';
 import pako from 'pako';
-import LightningFS from '../../lightning-fs/src/index.js';
-import MemoryDB from './MemoryDB.js';
+import LightningFS from '@isomorphic-git/lightning-fs';
 import lily from '@jcubic/lily';
 
+import MemoryDB from './MemoryDB.js';
+
+// Browser mocks for lightningFS
 import 'fake-indexeddb/auto.js';
 global.navigator = {};
+
 
 // ref: https://gist.github.com/lovasoa/8691344
 async function* walk(root, dir = '') {
