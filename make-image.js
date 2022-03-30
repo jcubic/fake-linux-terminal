@@ -22,7 +22,9 @@ async function* walk(root, dir = '') {
         const entry = path.join(dir, d.name);
         const name = directory ? entry + '/' : entry;
         yield name;
-        if (directory) yield* walk(root, entry);
+        if (directory) {
+            yield* walk(root, entry);
+        }
     }
 }
 
