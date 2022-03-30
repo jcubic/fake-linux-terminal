@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="Description" content=""/>
+    <link rel="shortcut icon" href=""/>
+    <!--[if IE]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--
+    <link href="css/style.css" rel="stylesheet"/>
+    -->
+    <style>
+
+    </style>
+    <script src="../../lightning-fs/dist/lightning-fs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.0.4/dist/pako.es5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/isomorphic-git@1.17.0/index.umd.min.js"></script>
+    <script>
+     
+     function download(data, filename) {
+         const blob = new Blob([data], { type: 'application/octet-stream' });
+         const url = URL.createObjectURL(blob);
+         const a = document.createElement('a');
+         a.style.display = 'none';
+         a.href = url;
+         a.download = filename
+         document.body.appendChild(a);
+         a.click();
+         document.body.removeChild(a);
+         setTimeout(() => {
+             URL.revokeObjectURL(url);
+         }, 0);
+     }
+
+     function loadFile(file) {
+         return new Promise((resolve, reject) => {
+             const reader = new FileReader();
+             reader.addEventListener('load', async event => {
+                 const image = new Uint8Array(event.target.result);
+                 resolve(JSON.parse(pako.inflate(image, { to: 'string' })));
+             });
+             reader.addEventListener('error', reject);
+             reader.readAsArrayBuffer(file);
+         });
+     }
+     (async () => {
+         
+     });
+     /*
+
+         const db = new MemoryDB();
+         const fs = new LightningFS("fs", { db });
+         await fs.promises.writeFile('/foo', 'hello');
+         await fs.promises.writeFile('/bar', 'world');
+         await fs.promises.flush();
+         const dump = pako.deflate(JSON.stringify(db.dump()));
+         console.log(dump);
+         return;
+         //download(dump, 'image.z');
+     })();
+     */
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+  <input type="file" id="file" />
+  <script>
+   file.addEventListener('change', async (e) => {
+       const f = file.files[0];
+       if (f) {
+           const data = await loadFile(f);
+           const { default: MemoryDB } = await import('./MemoryDB.js');
+           const db = new MemoryDB(data);
+           const { promises: fs } = new LightningFS("fs", { db });
+           console.log((await fs.readFile('/home/guest/welcome.txt')).toString());
+           return;
+           const foo = await fs.readFile('/foo');
+           const bar = await fs.readFile('/bar');
+           console.log([foo, bar].join(' '));
+       }
+   });
+  </script>
+</body>
+</html>
