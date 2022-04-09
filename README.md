@@ -1,4 +1,4 @@
-# Fake-Linux
+# Fake Linux Terminal
 
 This project is attempt to recreate Unix like Terminal-based environment.
 
