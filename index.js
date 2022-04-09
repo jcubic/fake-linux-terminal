@@ -239,15 +239,16 @@ var term;
     };
     
     // --------------------------------------------------------------
-    term = $('#term').terminal((command) => {
-        var cmd = $.terminal.parse_command(command);
-        if (commands[cmd.name]) {
-            commands[cmd.name].call(term, cmd);
-        } else {
-            term.error('Command not found');
+    term = $('#term').terminal(command => {
+        if (command.trim()) {
+            var cmd = $.terminal.parse_command(command);
+            if (commands[cmd.name]) {
+                commands[cmd.name].call(term, cmd);
+            } else {
+                term.error('Command not found');
+            }
         }
     }, {
-        checkArity: false,
         greetings: 'Fake Linux Terminal\n',
         prompt: function() {
             return [
