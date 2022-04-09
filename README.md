@@ -15,7 +15,7 @@ The system will run completely in Browser, no Backend. It will be based on FileS
 - [x] Create Images for directory
 - [x] Add a way to load the image in browser and read the file
 - [x] Create Web Terminal based on [Fake Linux Terminal](https://codepen.io/jcubic/pen/bzYQNw) (use [LighntingFS version](https://codepen.io/jcubic/pen/vYmjMNd))
-- [ ] Use [SVG Terminal](https://codepen.io/jcubic/pen/rNYybjr)
+- [x] Use [SVG Terminal](https://codepen.io/jcubic/pen/rNYybjr)
 - [ ] Work on Some text for the website, add Meta tags, Social Cover Images etc.
 - [ ] Modify Web Terminal to use LitningFS and FS Images
 - [ ] Create DNS record for fake.terminal.jcubic.pl and GitHub pages

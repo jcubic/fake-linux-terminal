@@ -1,35 +1,3 @@
-<!DOCTYPE HTML>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-    <meta name="Description" content=""/>
-    <link rel="shortcut icon" href=""/>
-    <!-- to get icon for the site, you can use this tool:
-    https://realfavicongenerator.net/
-    -->
-    <style>
-:root {
-    --size: 1.2;
-}
-body.hover {
-    --background: #696969;
-}
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/jquery"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jcubic/static/js/wcwidth.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-polyfills/keyboard.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery.terminal/js/jquery.terminal.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery.terminal/js/less.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@isomorphic-git/lightning-fs/dist/lightning-fs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pako@2.0.4/dist/pako.es5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/isomorphic-git@1.17.0/index.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jcubic/static/js/path.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.terminal/css/jquery.terminal.min.css"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
-<body>
-    <script>
 var term;
 (async function() {
     /* TODO:
@@ -271,7 +239,7 @@ var term;
     };
     
     // --------------------------------------------------------------
-    term = $('body').terminal((command) => {
+    term = $('#term').terminal((command) => {
         var cmd = $.terminal.parse_command(command);
         if (commands[cmd.name]) {
             commands[cmd.name].call(term, cmd);
@@ -322,15 +290,15 @@ var term;
             cb(Object.keys(commands));
         }
     });
-    $(document.body).on('dragover', function(e) {
+    term.on('dragover', function(e) {
         e.preventDefault();
-        $(this).addClass('hover');
+        term.addClass('hover');
     }).on('dragleave', function(e) {
         e.preventDefault();
-        $(this).removeClass('hover');
+        term.removeClass('hover');
     }).on('drop', async function(e) {
         e.preventDefault();
-        $(this).removeClass('hover');
+        term.removeClass('hover');
         const files = Array.from(event.dataTransfer.files || event.target.files || []);
         if (files.length) {
             boot(await loadFile(files[0]));
@@ -414,6 +382,3 @@ var term;
         };
     }
 })();
-    </script>
-</body>
-</html>
