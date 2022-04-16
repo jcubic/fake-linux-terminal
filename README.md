@@ -26,7 +26,7 @@ The system will run completely in Browser, no Backend. It will be based on FileS
 - [ ] Add way to see the source code of the code (to remove AGPL compliance burden)
 - [ ] Implement Bash.js interpreter using [bash-parser](https://www.npmjs.com/package/bash-parser)
 - [ ] Try to make Bash.js part of the Image
-- [ ] Add env variables e.g. `$PATH`
+- [ ] Add env variables e.g. `$PATH` and `PS1`
 - [ ] `[SPIKE]` ESModules with Service Worker inside Web Worker executable
   - [ ] Shared libraries as ESModules
 - [ ] Bash Commands
@@ -47,7 +47,7 @@ The system will run completely in Browser, no Backend. It will be based on FileS
 - [ ] Filestem
   - [ ] `/usr/bin/ls`
   - [ ] `/usr/bin/cat`
-  - [ ] `/usr/bin/zip
+  - [ ] `/usr/bin/zip`
   - [ ] `/usr/bin/grep`
   - [ ] `/usr/bin/xargs`
   - [ ] `/usr/bin/head`
@@ -60,7 +60,6 @@ The system will run completely in Browser, no Backend. It will be based on FileS
   - [ ] `/usr/bin/figlet`
   - [ ] `/usr/bin/download`
   - [ ] `/usr/bin/vi`
-  - [ ] `/usr/bin/
   - [ ] `/etc/motd`
   - [ ] `~/.bashrc`
 
