@@ -306,7 +306,7 @@ var term;
         }
     });
     term.pause();
-    fetch('root-image.z').then(res => {
+    fetch('image.z').then(res => {
         return res.arrayBuffer();
     }).then(image => {
         boot(JSON.parse(pako.inflate(image, { to: 'string' })));

@@ -1,0 +1,22 @@
+name: Deploy
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: "build"
+        run: "make"
+      - name: upload
+        uses: betanzos/scp-upload@v1
+        with:
+          source: "./dist/*"
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          recursive: 'true'
+          key: ${{ secrets.SSH_KEY }}
+          remote_dir: '~/websites/terminal/fake/'
