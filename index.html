@@ -24,7 +24,6 @@ body {
 }
 body, html, .laptop, .term-wrapper, #term {
     height: 100%;
-    
 }
 .term-wrapper {
     overflow: hidden;
@@ -33,6 +32,33 @@ body, html, .laptop, .term-wrapper, #term {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+#term:not(.terminal) {
+     position: relative;
+     display: block;
+     position: absolute;
+     left: 50%;
+     top: 50%;
+     transform: translate(-50%, -50%) rotate(0deg);
+     width: 10px;
+     height: 10px;
+     border: 2px solid #aaa;
+     border-radius: 50%;
+     border-top-color: #005596;
+     animation: 1s loader linear infinite;
+}
+#term:not(.terminal)::before {
+     content: "";
+}
+@-webkit-keyframes loader {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg)
+  }
+}
+@keyframes loader {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg)
+  }
 }
 a[href^="mailto"] {
     text-decoration: none;
@@ -1617,7 +1643,6 @@ a[href^="mailto"] {
     </rdf:RDF>
   </metadata>
 </svg>
-
   </div>
     <script src="https://cdn.jsdelivr.net/npm/jquery"></script>
     <script src="https://cdn.jsdelivr.net/gh/jcubic/static/js/wcwidth.js"></script>
