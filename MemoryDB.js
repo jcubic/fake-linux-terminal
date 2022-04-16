@@ -1,15 +1,10 @@
-let idb;
-const idb_ready = import('https://cdn.jsdelivr.net/npm/@isomorphic-git/idb-keyval@3.3.2/dist/idb-keyval.mjs').then(module => {
-    idb = module;
-});
-
 // copied from lighting-fs
 class IdbBackend {
     constructor(dbname, storename) {
         this._database = dbname;
         this._storename = storename;
-        this._ready = idb_ready.then(() => {
-            this._store = new idb.Store(this._database, this._storename);
+        this._ready = import('https://cdn.jsdelivr.net/npm/@isomorphic-git/idb-keyval@3.3.2/dist/idb-keyval.mjs').then(module => {
+            this._store = new module.Store(this._database, this._storename);
         });
     }
     async saveSuperblock(superblock) {
