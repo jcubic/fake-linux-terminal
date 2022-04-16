@@ -17,8 +17,7 @@ The system will run completely in Browser, no Backend. It will be based on FileS
 - [x] Create Web Terminal based on [Fake Linux Terminal](https://codepen.io/jcubic/pen/bzYQNw) (use [LighntingFS version](https://codepen.io/jcubic/pen/vYmjMNd))
 - [x] Use [SVG Terminal](https://codepen.io/jcubic/pen/rNYybjr)
 - [ ] Work on Some text for the website, add Meta tags, Social Cover Images etc.
-- [ ] Modify Web Terminal to use LitningFS and FS Images
-- [ ] Create DNS record for fake.terminal.jcubic.pl and GitHub pages
+- [x] Modify Web Terminal to use LitningFS and FS Images
 - [ ] Add authentication based on /etc/passwd file and /etc/shadow (using `$1$` and MD5 hash)
 - [ ] `[SPIKE]` Persistence of FS (consider save/load buttons - copy to indexedDB)
 - [ ] Try to add autologin button that will change hash, so you can refresh the page
