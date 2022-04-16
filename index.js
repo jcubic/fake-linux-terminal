@@ -6,7 +6,7 @@ var term;
        Posix API? open/read/write
        Promise API for worker
        main function - default export or API with callback
-       
+
      * BASH + cd, pwd, echo, history, pushd, popd, wait, source
      * scripts in JavaSript or Bash in FS /bin cat,ls,less,more,mkdir,rmdir,rm,mv,touch,locate,find,grep,xargs,head,tail,diff,wget,zip,unzip
      * Image files in ZIP
@@ -15,10 +15,11 @@ var term;
 
     const { default: MemoryDB } = await import('./MemoryDB.js');
     let fs;
+    let db;
+    const db_name = '__fs__';
     function boot(data) {
-        const db = new MemoryDB(data);
-        const idb_name = '__fs__';
-        fs = new LightningFS(idb_name, { db });
+        db = data ? new MemoryDB(data) : new MemoryDB(db_name);
+        fs = new LightningFS(db_name, { db });
     }
 
     // --------------------------------------------------------------
@@ -91,9 +92,9 @@ var term;
                     resolve();
                 }
             });
-        });    
+        });
     }
-    
+
     // --------------------------------------------------------------
     window.cwd = '/';
     var commands = {
@@ -119,6 +120,10 @@ var term;
                     }
                 });
             }
+        },
+        store: function(cmd) {
+            db.persistent(db_name);
+            localStorage.setItem('__fs__persistent', 1);
         },
         cat: function(cmd) {
             read(cmd, (x) => term.echo(x, {newline: false}));
@@ -147,7 +152,7 @@ var term;
         },
         rm: function(cmd) {
             var {options, args} = split_args(cmd.args);
-            
+
             var len = args.length;
             if (len) {
                 term.pause();
@@ -237,7 +242,7 @@ var term;
             }
         }
     };
-    
+
     // --------------------------------------------------------------
     term = $('#term').terminal(command => {
         if (command.trim()) {
@@ -305,13 +310,17 @@ var term;
             boot(await loadFile(files[0]));
         }
     });
-    term.pause();
-    fetch('image.z').then(res => {
-        return res.arrayBuffer();
-    }).then(image => {
-        boot(JSON.parse(pako.inflate(image, { to: 'string' })));
-        term.resume();
-    });
+    if (localStorage.getItem('__fs__persistent')) {
+        boot();
+    } else {
+        term.pause();
+        fetch('image.z').then(res => {
+            return res.arrayBuffer();
+        }).then(image => {
+            boot(JSON.parse(pako.inflate(image, { to: 'string' })));
+            term.resume();
+        });
+    }
     // -------------------------------------------------------------------
     function color(name, string) {
         var colors = {

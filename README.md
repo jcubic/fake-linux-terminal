@@ -19,7 +19,7 @@ The system will run completely in Browser, no Backend. It will be based on FileS
 - [ ] Work on Some text for the website, add Meta tags, Social Cover Images etc.
 - [x] Modify Web Terminal to use LitningFS and FS Images
 - [ ] Add authentication based on /etc/passwd file and /etc/shadow (using `$1$` and MD5 hash)
-- [ ] `[SPIKE]` Persistence of FS (consider save/load buttons - copy to indexedDB)
+- [x] `[SPIKE]` Persistence of FS (consider save/load buttons - copy to indexedDB)
 - [ ] Try to add autologin button that will change hash, so you can refresh the page
 - [ ] Implement executable files that will be JavaScript scripts that will run in Web Workers
 - [ ] Add stdin/stdout/stderr PIPES to Web Worker API
