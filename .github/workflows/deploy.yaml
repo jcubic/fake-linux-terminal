@@ -17,12 +17,12 @@ jobs:
       - name: "build"
         run: "make"
       - name: upload
-        uses: betanzos/scp-upload@v1
+        uses: appleboy/scp-action@v0.1.2
         with:
-          source: "./dist/*"
+          source: ./dist/*
+          strip_components: 1
+          target: '~/websites/terminal/fake/'
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
-          recursive: 'true'
           key: ${{ secrets.SSH_KEY }}
-          remote_dir: '~/websites/terminal/fake/'
