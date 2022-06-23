@@ -3,32 +3,34 @@ class IdbBackend {
     constructor(dbname, storename) {
         this._database = dbname;
         this._storename = storename;
-        this._ready = import('https://cdn.jsdelivr.net/npm/@isomorphic-git/idb-keyval@3.3.2/dist/idb-keyval.mjs').then(module => {
-            this._store = new module.Store(this._database, this._storename);
+        this._ready = import('https://cdn.jsdelivr.net/npm/@isomorphic-git/idb-keyval@3.3.2/dist/idb-keyval.mjs').then(idb => {
+            this._idb = idb;
+            this._store = new idb.Store(this._database, this._storename);
         });
     }
     async saveSuperblock(superblock) {
         await this._ready;
-        return idb.set("!root", superblock, this._store);
+        return this._idb.set("!root", superblock, this._store);
     }
     async loadSuperblock() {
         await this._ready;
-        return idb.get("!root", this._store);
+        return this._idb.get("!root", this._store);
     }
     readFile(inode) {
-        return idb.get(inode, this._store)
+        return this._idb.get(inode, this._store)
     }
     writeFile(inode, data) {
-        return idb.set(inode, data, this._store)
+        return this._idb.set(inode, data, this._store)
     }
     unlink(inode) {
-        return idb.del(inode, this._store)
+        return this._idb.del(inode, this._store)
     }
-    wipe() {
-        return idb.clear(this._store)
+    async wipe() {
+        await this._ready;
+        return this._idb.clear(this._store)
     }
     close() {
-        return idb.close(this._store)
+        return this._idb.close(this._store)
     }
 }
 
