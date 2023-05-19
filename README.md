@@ -1,5 +1,8 @@
 # Fake Linux Terminal
 
+![Laptop with Fake Linux Terminal using jQuery Terminal](https://github.com/jcubic/fake-linux-terminal/blob/master/.github/screenshot.png)
+
+
 This project is attempt to recreate Unix like Terminal-based environment.
 
 This is not Emulator, you will not be able to compile and run C++ programs. Instead this is
