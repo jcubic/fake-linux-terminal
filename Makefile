@@ -2,9 +2,9 @@ SHELL=/bin/bash
 CP=cp
 TEST=test
 
-all: build
+all: build image.z
 
-image.z:
+image.z: $(shell find ./root)
 	./make-image.js -d ./root -f image.z
 
 build: image.z

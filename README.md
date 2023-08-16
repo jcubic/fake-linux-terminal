@@ -30,7 +30,7 @@ The system will run completely in Browser, no Backend. It will be based on FileS
 - [ ] Implement Bash.js interpreter using [bash-parser](https://www.npmjs.com/package/bash-parser)
 - [ ] Try to make Bash.js part of the Image
 - [ ] Add env variables e.g. `$PATH` and `PS1`
-- [ ] `[SPIKE]` ESModules with Service Worker inside Web Worker executable
+- [x] `[SPIKE]` ESModules with Service Worker inside Web Worker executable
   - [ ] Shared libraries as ESModules
 - [ ] Bash Commands
   - [ ] `cd`

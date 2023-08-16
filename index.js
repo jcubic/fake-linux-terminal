@@ -14,12 +14,111 @@ var term;
      */
 
     const { default: MemoryDB } = await import('./MemoryDB.js');
+
     let fs;
     let db;
     const db_name = '__fs__';
     function boot(data) {
         db = data ? new MemoryDB(data) : new MemoryDB(db_name);
         fs = new LightningFS(db_name, { db });
+        window.fs = fs;
+    }
+    const bs = new BroadcastChannel('rpc');
+
+    // -----------------------------------------------------------------------
+    function is_function(object) {
+        return get_type(object) === 'function';
+    }
+    // -----------------------------------------------------------------------
+    function is_object(object) {
+        return object && typeof object === 'object';
+    }
+    // -----------------------------------------------------------------------
+    function is_promise(object) {
+        return is_object(object) && is_function(object.then || object.done);
+    }
+    function get_type(object) {
+        if (typeof object === 'function') {
+            return 'function';
+        }
+        if (object === null) {
+            return object + '';
+        }
+        if (Array.isArray(object)) {
+            return 'array';
+        }
+        if (typeof object === 'object') {
+            return 'object';
+        }
+        return typeof object;
+    }
+
+    function unpromise(value, callback, error) {
+        if (is_promise(value)) {
+            if (is_function(value.catch) && is_function(error)) {
+                value.catch(error);
+            }
+            if (is_function(value.done)) {
+                return value.done(callback);
+            } else if (is_function(value.then)) {
+                return value.then(callback);
+            }
+        } else if (value instanceof Array) {
+            var promises = value.filter(function(value) {
+                return value && (is_function(value.done) || is_function(value.then));
+            });
+            if (promises.length) {
+                var result = $.when.apply($, value).then(function() {
+                    return callback([].slice.call(arguments));
+                });
+                if (is_function(result.catch)) {
+                    result = result.catch(error);
+                }
+                return result;
+            }
+        }
+        return callback(value);
+    }
+
+    const namespaces = {
+        fs: () => fs.promises,
+        term: () => term
+    };
+
+    bs.addEventListener('message', message => {
+        const { data } = message;
+        if (namespaces[data.namespace]) {
+            const id = data.id;
+            const object = namespaces[data.namespace]();
+            unpromise(object[data.method](...data.args), data => {
+                bs.postMessage({
+                    id,
+                    result: data === term ? null : data
+                });
+            }, error => {
+                bs.postMessage({
+                    id,
+                    error
+                });
+            });
+        }
+    });
+
+    if ('serviceWorker' in navigator) {
+        const scope = location.pathname.replace(/\/[^\/]+$/, '/');
+        navigator.serviceWorker.register('sw.js', { scope })
+            .then(function(reg) {
+                reg.addEventListener('updatefound', function() {
+                    const installingWorker = reg.installing;
+                    console.log('A new service worker is being installed:',
+                                installingWorker);
+                });
+                // registration worked
+                console.log('Registration succeeded. Scope is ' + reg.scope);
+            }).catch(function(error) {
+                // registration failed
+                console.log('Registration failed with ' + error);
+            });
     }
 
     // --------------------------------------------------------------
@@ -250,7 +349,17 @@ var term;
             if (commands[cmd.name]) {
                 commands[cmd.name].call(term, cmd);
             } else {
-                term.error('Command not found');
+                term.pause();
+                fs.promises.stat(command).then(() => {
+                    const worker = new Worker(`__fs__${command}`);
+                    worker.addEventListener('message', message => {
+                        if (message.data === 'exit') {
+                            resolve();
+                        }
+                    });
+                }).catch(err => {
+                    term.error(err).resume();
+                });
             }
         }
     }, {
