@@ -1,8 +1,15 @@
-importScripts(location.href.replace(/__fs__.*/, 'kernel.js'));
+function require(module) {
+  return modules[module];
+}
 
-modules.term.resume().then(() => {
-  return main();
-}).then(code => {
+function exit(code) {
   self.postMessage({exit: code});
   self.close();
+}
+
+main().then(exit).catch(error => {
+  modules.term.error(error);
+  exit(100);
 });
+
+modules.term.resume();

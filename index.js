@@ -353,8 +353,9 @@ var term;
                 fs.promises.stat(command).then(() => {
                     const worker = new Worker(`__fs__${command}`);
                     worker.addEventListener('message', message => {
-                        if (message.data === 'exit') {
-                            resolve();
+                        if ('exit' in message.data) {
+                          const code = message.data.exit;
+                          console.log(`Process exit code ${code}`);
                         }
                     });
                 }).catch(err => {

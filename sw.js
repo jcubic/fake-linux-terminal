@@ -9,13 +9,13 @@ const { Wayne, FileSystem } = wayne;
 
 const { promises: fs } = new LightningFS('__fs__');
 
-fetch('./process_postfix.js')
-  .then(res => res.text())
-  .then(postfix => {
+Promise.all(['./process_prefix.js', './process_postfix.js'].map(path => {
+  return fetch(path).then(res => res.text());
+})).then(([prefix, postfix]) => {
     const readFile = fs.readFile;
     fs.readFile = async function(...args) {
       const output = await readFile(...args);
-      return `${output}\n${postfix}`;
+      return `${prefix}\n${output}\n${postfix}`;
     };
   });
 

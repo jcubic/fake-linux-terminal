@@ -1,7 +1,7 @@
+const term = require('term');
+
 async function main() {
-    const name = await modules.term.read('name: ');
-    await modules.term.pause();
-    await modules.term.echo(`Hello ${name}`);
-    await modules.term.resume();
+    const name = await term.read('name: ');
+    await term.echo(`Hello ${name}`);
     return 0;
 }
