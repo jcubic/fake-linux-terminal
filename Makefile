@@ -10,5 +10,8 @@ image.z: $(shell find ./root)
 build: image.z
 	$(TEST) -d dist || mkdir ./dist
 	$(CP) ./index.{html,js} ./dist
+	$(CP) ./sw.js ./dist
+	$(CP) ./process_*.js ./dist
+	$(CP) ./kernel.js ./dist
 	$(CP) ./MemoryDB.js ./dist
 	$(CP) ./image.z ./dist
