@@ -231,6 +231,7 @@ var term;
             get_image_data().then(async data => {
                 await boot();
                 await db.load(data);
+                localStorage.setItem('__fs__persistent', 1);
                 this.resume();
             });
         },

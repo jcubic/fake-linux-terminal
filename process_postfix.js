@@ -7,9 +7,10 @@ function exit(code) {
   self.close();
 }
 
-main().then(exit).catch(error => {
-  modules.term.error(error);
-  exit(100);
-});
-
-modules.term.resume();
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+    main().then(exit).catch(error => {
+        modules.term.error(error);
+        exit(100);
+    });
+    modules.term.resume();
+}
