@@ -82,9 +82,45 @@ var term;
         return callback(value);
     }
 
+    const dom = {
+        loaded(filename) {
+            const extension = path.extname(filename);
+            switch (extension) {
+                case 'css':
+                    return !!$(`link[href$="${filename}"]`).length;
+            }
+        },
+        inject(html) {
+            term.append(html);
+        },
+        exists(selector) {
+            return !!$(selector).length;
+        },
+        load(filename) {
+            return new Promise((resolve, reject) => {
+                const full_path = `__fs__${filename}`;
+                const extension = path.extname(filename);
+                switch (extension) {
+                    case '.css':
+                        $('<link/>').attr({
+                            href: full_path,
+                            rel: 'stylesheet'
+                        }).appendTo('head').on('load', () => resolve());
+                        break;
+                    case '.js':
+                        $.getScript(full_path).then(() => resolve());
+                        break;
+                    default:
+                        reject(`Invalid extension ${extension}`);
+                }
+            });
+        }
+    };
+
     const namespaces = {
         fs: () => fs.promises,
-        term: () => term
+        term: () => term,
+        dom: () => dom
     };
 
     bs.addEventListener('message', message => {
