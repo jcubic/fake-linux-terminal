@@ -17,20 +17,20 @@ class IdbBackend {
         return this._idb.get("!root", this._store);
     }
     readFile(inode) {
-        return this._idb.get(inode, this._store)
+        return this._idb.get(inode, this._store);
     }
     writeFile(inode, data) {
-        return this._idb.set(inode, data, this._store)
+        return this._idb.set(inode, data, this._store);
     }
     unlink(inode) {
-        return this._idb.del(inode, this._store)
+        return this._idb.del(inode, this._store);
     }
     async wipe() {
         await this._ready;
-        return this._idb.clear(this._store)
+        await this._idb.clear(this._store);
     }
     close() {
-        return this._idb.close(this._store)
+        return this._idb.close(this._store);
     }
 }
 
@@ -38,10 +38,12 @@ class BackendDB {
     constructor(data) {
         if (typeof data === 'string') {
             this._idb = new IdbBackend(data, data + '_files');
-        } else if (data) {
-            this.load(data);
+            this._ready = this._idb._ready;
         } else {
             this._store = new Map();
+            if (data) {
+                this._ready = this.load(data);
+            }
         }
     }
     saveSuperblock(superblock) {
@@ -104,10 +106,11 @@ class BackendDB {
             return this.writeFile(inode, Uint8Array.from(data));
         }));
     }
-    persistent(name) {
+    async persistent(name) {
         const dump = this.dump();
         this._idb = new IdbBackend(name, name + '_files');
-        this.load(dump);
+        await this._idb._ready;
+        await this.load(dump);
     }
 }
 

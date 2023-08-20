@@ -14,14 +14,16 @@ var term;
      */
 
     const { default: MemoryDB } = await import('./MemoryDB.js');
+    const path = await import('https://cdn.skypack.dev/path-browserify');
 
     let fs;
     let db;
     const db_name = '__fs__';
-    function boot(data) {
+    async function boot(data) {
         db = data ? new MemoryDB(data) : new MemoryDB(db_name);
         fs = new LightningFS(db_name, { db });
         window.fs = fs;
+        await db._ready;
     }
     const bs = new BroadcastChannel('rpc');
 
@@ -224,6 +226,14 @@ var term;
             db.persistent(db_name);
             localStorage.setItem('__fs__persistent', 1);
         },
+        install: async function(cmd) {
+            this.pause();
+            get_image_data().then(async data => {
+                await boot();
+                await db.load(data);
+                this.resume();
+            });
+        },
         cat: function(cmd) {
             read(cmd, (x) => term.echo(x, {newline: false}));
         },
@@ -423,14 +433,27 @@ var term;
     if (localStorage.getItem('__fs__persistent')) {
         boot();
     } else {
+        install();
+    }
+
+    // -------------------------------------------------------------------
+    function install() {
         term.pause();
-        fetch('image.z').then(res => {
-            return res.arrayBuffer();
-        }).then(image => {
-            boot(JSON.parse(pako.inflate(image, { to: 'string' })));
+        return get_image_data().then(async data => {
+            await boot(data);
             term.resume();
         });
     }
+
+    // -------------------------------------------------------------------
+    function get_image_data() {
+        return fetch('image.z').then(res => {
+            return res.arrayBuffer();
+        }).then(image => {
+            return JSON.parse(pako.inflate(image, { to: 'string' }));
+        });
+    }
+
     // -------------------------------------------------------------------
     function color(name, string) {
         var colors = {
@@ -500,5 +523,8 @@ var term;
             options: args.filter(arg => arg.match(/^-/)).join('').replace(/-/g, ''),
             args: args.filter(arg => !arg.match(/^-/))
         };
+    }
+    function delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
     }
 })();
