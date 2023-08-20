@@ -14,8 +14,12 @@ Promise.all(['./process_prefix.js', './process_postfix.js'].map(path => {
 })).then(([prefix, postfix]) => {
     const readFile = fs.readFile;
     fs.readFile = async function(...args) {
-      const output = await readFile(...args);
-      return `${prefix}\n${output}\n${postfix}`;
+        const [ path ] = args;
+        const output = await readFile(...args);
+        if (path.endsWith('.js')) {
+            return `${prefix}\n${output}\n${postfix}`;
+        }
+        return output;
     };
   });
 

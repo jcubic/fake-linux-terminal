@@ -19,10 +19,15 @@ var term;
     let fs;
     let db;
     const db_name = '__fs__';
-    async function boot(data) {
+    async function init(data) {
         db = data ? new MemoryDB(data) : new MemoryDB(db_name);
-        fs = new LightningFS(db_name, { db });
-        window.fs = fs;
+        if (fs) {
+            await fs.init(db_name, { db });
+        } else {
+            fs = new LightningFS(db_name, { db });
+            window.fs = fs;
+        }
+        await delay(500);
         await db._ready;
     }
     const bs = new BroadcastChannel('rpc');
@@ -265,7 +270,7 @@ var term;
         install: async function(cmd) {
             this.pause();
             get_image_data().then(async data => {
-                await boot();
+                await init();
                 await db.load(data);
                 localStorage.setItem('__fs__persistent', 1);
                 this.resume();
@@ -464,11 +469,19 @@ var term;
         term.removeClass('hover');
         const files = Array.from(event.dataTransfer.files || event.target.files || []);
         if (files.length) {
-            boot(await loadFile(files[0]));
+            term.pause();
+            const data = await loadFile(files[0]);
+            if (localStorage.getItem('__fs__persistent')) {
+                await init();
+                await db.load(data);
+            } else {
+                await init(data);
+            }
+            term.resume();
         }
     });
     if (localStorage.getItem('__fs__persistent')) {
-        boot();
+        init();
     } else {
         install();
     }
@@ -477,7 +490,7 @@ var term;
     function install() {
         term.pause();
         return get_image_data().then(async data => {
-            await boot(data);
+            await init(data);
             term.resume();
         });
     }

@@ -29,7 +29,8 @@ class IdbBackend {
         await this._ready;
         await this._idb.clear(this._store);
     }
-    close() {
+    async close() {
+        await this._ready;
         return this._idb.close(this._store);
     }
 }
