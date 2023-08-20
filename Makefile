@@ -15,3 +15,4 @@ build: image.z
 	$(CP) ./kernel.js ./dist
 	$(CP) ./MemoryDB.js ./dist
 	$(CP) ./image.z ./dist
+	$(CP) ./full-screen.html ./dist
