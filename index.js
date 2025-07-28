@@ -166,7 +166,7 @@ var term;
 
     // --------------------------------------------------------------
     function list(path) {
-        term.pause();
+        term.pause(true);
         return listDir(path).then((list) => (term.resume(), list));
     }
     // --------------------------------------------------------------
