@@ -16,13 +16,14 @@ jobs:
         run: "npm ci"
       - name: "build"
         run: "make"
-      - name: upload
-        uses: appleboy/scp-action@v0.1.2
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Copy files to server
+        uses: nick-fields/retry@v3
         with:
-          source: ./dist/*
-          strip_components: 1
-          debug: true
-          target: '~/fake.terminal.jcubic.pl/'
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          timeout_minutes: 5
+          max_attempts: 3
+          command: scp -o StrictHostKeyChecking=no -r ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_SERVER }}:${{ secrets.SSH_PATH }}
