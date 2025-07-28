@@ -21,6 +21,7 @@ jobs:
         with:
           source: ./dist/*
           strip_components: 1
+          debug: true
           target: '~/fake.terminal.jcubic.pl/'
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
