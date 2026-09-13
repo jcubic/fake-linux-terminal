@@ -5,15 +5,17 @@ importScripts(
     'https://cdn.jsdelivr.net/gh/jcubic/static@master/js/path.js'
 );
 
-const { Wayne, FileSystem } = wayne;
+const { Wayne, FileSystem, force } = wayne;
 
 const { promises: fs } = new LightningFS('__fs__');
 
-Promise.all(['./process_prefix.js', './process_postfix.js'].map(path => {
+const promise = Promise.all(['./process_prefix.js', './process_postfix.js'].map(path => {
   return fetch(path).then(res => res.text());
-})).then(([prefix, postfix]) => {
-    const readFile = fs.readFile;
+}));
+
+(readFile => {
     fs.readFile = async function(...args) {
+        const [prefix, postfix] = await promise;
         const [ path ] = args;
         const output = await readFile(...args);
         if (path.endsWith('.js')) {
@@ -21,8 +23,10 @@ Promise.all(['./process_prefix.js', './process_postfix.js'].map(path => {
         }
         return output;
     };
-  });
+})(fs.readFile);
 
 const app = new Wayne();
 
 app.use(FileSystem({ path, fs, mime, prefix: '__fs__' }));
+
+force();
