@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This is a public archive. The development of this project will continue on [hacking.cafe](https://github.com/jcubic/hacking.cafe).
+
 # Fake Linux Terminal
 
 ![Laptop with Fake Linux Terminal using jQuery Terminal](https://github.com/jcubic/fake-linux-terminal/blob/master/.github/screenshot.png)
